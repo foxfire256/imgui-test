@@ -1,0 +1,17 @@
+*.o
+build/*
+build2/*
+*.exe
+cmake-build-debug/*
+cmake-build-release/*
+CMakeLists.txt.user
+CMakeLists.txt.user.*
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.pdf
+doc/*.gz
+.idea/*
+.idea
+cmake-build*
+cmake-build-relwithdebinfo/*
