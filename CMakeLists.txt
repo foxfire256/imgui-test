@@ -6,7 +6,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 include_directories("imgui")
 include_directories("imgui/backends")
-include_directories("common-cpp")
+#include_directories("common-cpp")
+
+# git submodule add git@github.com:ocornut/imgui.git imgui
 
 # git submodule add ssh://foxfire@foxfire256.ddns.net:27730/nas/dev/common-cpp common-cpp
 # then manually add the following to .gitmodules
@@ -89,14 +91,23 @@ else()
 	set(LIBRARY_TYPE STATIC)
 endif()
 
-add_executable(${PROJECT_NAME} ${MAIN_SOURCE} ${IMGUI_SOURCE})
+add_library(imgui STATIC ${IMGUI_SOURCE})
+target_link_libraries(imgui
+	GLEW::GLEW
+	SDL2::SDL2main
+	SDL2::SDL2
+)
+
+add_executable(${PROJECT_NAME} ${MAIN_SOURCE})
 target_link_libraries(${PROJECT_NAME} 
 	${LIBS}
 	${Boost_LIBRARIES}
 	${OPENGL_LIBRARY}
 	GLEW::GLEW
 	SDL2::SDL2main
-	SDL2::SDL2)
+	SDL2::SDL2
+	imgui
+)
 
 if(MSVC)
 	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
