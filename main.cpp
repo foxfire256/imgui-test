@@ -11,6 +11,8 @@ extern "C"
 }
 #endif
 
+#include <iostream>
+#include <string>
 #include <SDL2/SDL.h>
 
 #include "gfx.hpp"
@@ -20,19 +22,20 @@ int win_w, win_h;
 
 int main(int argc, char** argv)
 {
-	win_w = 640;
-	win_h = 480;
+	win_w = 768;
+	win_h = 768;
 	done = 0;
 
-	std::unique_ptr<gfx> g(new gfx());
-	
-	g.get()->init(win_w, win_h);
+	gfx::get_instance().init(win_w, win_h);
 
 	SDL_Event event;
 	while(!done)
 	{
 		while(SDL_PollEvent(&event))
 		{
+			bool want_mouse;
+			bool want_keyboard;
+			gfx::get_instance().process_gui_events(event, want_mouse, want_keyboard);
 			switch(event.type)
 			{
 			case SDL_KEYDOWN:
@@ -42,6 +45,15 @@ int main(int argc, char** argv)
 				}
 				break;
 			case SDL_KEYUP:
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				std::cout << "Mouse button: " << std::to_string(event.button.button) << " at (" << event.button.x << ", "
+					<< event.button.y << ")";
+				if(want_mouse)
+					std::cout << " <<ImGui wants the mouse>> ";
+				std::cout << std::endl;
+				break;
+			case SDL_MOUSEMOTION:
 				break;
 			case SDL_QUIT:
 				done = 1;
@@ -53,7 +65,7 @@ int main(int argc, char** argv)
 					done = 1;
 					break;
 				case SDL_WINDOWEVENT_RESIZED:
-					g.get()->resize(event.window.data1, event.window.data2);
+					gfx::get_instance().resize(event.window.data1, event.window.data2);
 					break;
 				default:
 					break;
@@ -63,7 +75,7 @@ int main(int argc, char** argv)
 			}
 		}
 
-		g.get()->render();
+		gfx::get_instance().render();
 	}
 
 	return 0;
