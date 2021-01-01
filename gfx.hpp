@@ -2,10 +2,6 @@
 #define GFX_HPP
 
 #define _USE_MATH_DEFINES
-#include <cstdint>
-#include <memory>
-#include <random>
-#include <vector>
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>

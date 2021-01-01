@@ -2,22 +2,11 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
 #include <string>
 
-//#include "fox/gfx/eigen_opengl.hpp"
-//#include "shader.hpp"
-//#include "uniform.hpp"
-
 #define print_opengl_error() print_opengl_error2((char *)__FILE__, __LINE__)
 int print_opengl_error2(char* file, int line);
-
-#if defined(_WIN32) || defined(_WIN64)
-std::string data_root = "C:/dev/imgui-testing";
-#else // Linux or Unix
-std::string data_root = std::string(getenv("HOME")) + "/dev/imgui-testing";
-#endif
 
 bool gfx::show_demo_window = true;
 
@@ -26,11 +15,7 @@ void gfx::init(int win_w, int win_h)
 	this->win_w = win_w;
 	this->win_h = win_h;
 
-	render_time = 0.0;
-	frames = framerate = 0;
-	//fps_counter = std::unique_ptr<fox::counter>(new fox::counter());
-
-	std::string window_title = "imgui testing";
+	std::string window_title = "ImGUI Testing";
 
 	int ret;
 	ret = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
@@ -71,8 +56,8 @@ void gfx::init(int win_w, int win_h)
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
 		SDL_GL_CONTEXT_PROFILE_CORE);
@@ -100,7 +85,6 @@ void gfx::init(int win_w, int win_h)
 	snprintf(buffer, 8, "%.1f", ram_mb / 1024.0f);
 	std::cout << "System RAM " << ram_mb << "MB (" << buffer << " GB)\n";
 
-
 	// init glew first
 	glewExperimental = GL_TRUE; // Needed in core profile
 	if(glewInit() != GLEW_OK)
@@ -127,7 +111,10 @@ void gfx::init(int win_w, int win_h)
 	GLint out_verts;
 	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &out_verts);
 	printf("GL_MAX_GEOMETRY_OUTPUT_VERTICES: %d\n", out_verts);
-	print_opengl_error();
+	if(print_opengl_error())
+	{
+		exit(-1);
+	}
 	fflush(stdout);
 
 	IMGUI_CHECKVERSION();
@@ -158,7 +145,11 @@ void gfx::init(int win_w, int win_h)
 	glGenVertexArrays(1, &default_vao);
 	glBindVertexArray(default_vao);
 
-	print_opengl_error();
+	if(print_opengl_error())
+	{
+		deinit();
+		exit(-1);
+	}
 }
 
 void gfx::deinit()
@@ -209,7 +200,11 @@ void gfx::render()
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
-	print_opengl_error();
+	if(print_opengl_error())
+	{
+		deinit();
+		exit(-1);
+	}
 
 	show_demo_window = true;
 
@@ -240,10 +235,20 @@ void gfx::render()
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 	}
-	print_opengl_error();
+	if(print_opengl_error())
+	{
+		deinit();
+		exit(-1);
+	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if(print_opengl_error())
+	{
+		deinit();
+		exit(-1);
+	}
 
 	SDL_GL_SwapWindow(window);
 }

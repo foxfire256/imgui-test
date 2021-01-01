@@ -11,8 +11,10 @@ extern "C"
 }
 #endif
 
+#include <chrono>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <SDL2/SDL.h>
 
 #include "gfx.hpp"
@@ -76,6 +78,7 @@ int main(int argc, char** argv)
 		}
 
 		gfx::get_instance().render();
+		std::this_thread::sleep_for(std::chrono::microseconds(100));
 	}
 
 	return 0;
