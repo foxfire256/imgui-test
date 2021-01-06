@@ -5,6 +5,10 @@
 #include <iostream>
 #include <string>
 
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+
 #define print_opengl_error() print_opengl_error2((char *)__FILE__, __LINE__)
 int print_opengl_error2(char* file, int line);
 
@@ -120,10 +124,6 @@ void gfx::init(int win_w, int win_h)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	// You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-	// - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-	// - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-	// Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
 
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL2_InitForOpenGL(window, context);
