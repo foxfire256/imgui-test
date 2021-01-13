@@ -6,6 +6,8 @@
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 
+#include "imgui.h"
+
 class gfx
 {
 public:
@@ -39,6 +41,13 @@ private:
 	uint32_t default_vao;
 
 	static bool show_demo_window;
+
+	bool first_pass;
+
+	ImFont* font_12;
+	ImFont* font_16;
+	ImFont* font_24;
+	ImFont* font_32;
 };
 
 #endif

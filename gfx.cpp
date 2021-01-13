@@ -5,7 +5,6 @@
 #include <iostream>
 #include <string>
 
-#include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 
@@ -18,6 +17,8 @@ void gfx::init(int win_w, int win_h)
 {
 	this->win_w = win_w;
 	this->win_h = win_h;
+
+	first_pass = true;
 
 	std::string window_title = "ImGUI Testing";
 
@@ -57,8 +58,8 @@ void gfx::init(int win_w, int win_h)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
@@ -124,6 +125,20 @@ void gfx::init(int win_w, int win_h)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImFontConfig config;
+	config.OversampleH = 2;
+	config.OversampleV = 1;
+	config.GlyphExtraSpacing.x = 1.0f;
+	config.SizePixels = 16.0f;
+	// the first font will be the default one used
+	font_16 = io.Fonts->AddFontDefault(&config);
+	config.SizePixels = 12.0f;
+	font_12 = io.Fonts->AddFontDefault(&config);
+	config.SizePixels = 24.0f;
+	font_24 = io.Fonts->AddFontDefault(&config);
+	config.SizePixels = 32.0f;
+	font_32 = io.Fonts->AddFontDefault(&config);
 
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL2_InitForOpenGL(window, context);
@@ -200,6 +215,17 @@ void gfx::render()
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
+	if(first_pass)
+	{
+		// this doesn't work so well for the demo window
+		ImVec2 pos = { 1, 1 };
+		ImGui::SetNextWindowPos(pos);
+		ImVec2 size = { (float)win_w - 2, (float)win_h - 2 };
+		ImGui::SetNextWindowSize(size);
+		std::cout << "Set window pos = " << pos[0] << ", " << pos[1] << std::endl;
+		std::cout << "Set window size = " << size[0] << ", " << size[1] << std::endl;
+	}
+
 	if(print_opengl_error())
 	{
 		deinit();
@@ -248,6 +274,11 @@ void gfx::render()
 	{
 		deinit();
 		exit(-1);
+	}
+
+	if(first_pass)
+	{
+		first_pass = false;
 	}
 
 	SDL_GL_SwapWindow(window);
