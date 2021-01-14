@@ -172,14 +172,14 @@ void gfx::init(int win_w, int win_h)
 	config.OversampleH = 2;
 	config.OversampleV = 1;
 	config.GlyphExtraSpacing.x = 1.0f;
-	config.SizePixels = 16.0f;
+	config.SizePixels = 16.0f * dpi_scale;
 	// the first font will be the default one used
 	font_16 = io.Fonts->AddFontDefault(&config);
-	config.SizePixels = 12.0f;
+	config.SizePixels = 12.0f * dpi_scale;
 	font_12 = io.Fonts->AddFontDefault(&config);
-	config.SizePixels = 24.0f;
+	config.SizePixels = 24.0f * dpi_scale;
 	font_24 = io.Fonts->AddFontDefault(&config);
-	config.SizePixels = 32.0f;
+	config.SizePixels = 32.0f * dpi_scale;
 	font_32 = io.Fonts->AddFontDefault(&config);
 
 	ImGui::StyleColorsDark();
