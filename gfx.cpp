@@ -55,6 +55,36 @@ void gfx::init(int win_w, int win_h)
 
 	SDL_ShowWindow(window);
 
+	// https://wiki.libsdl.org/CategoryVideo
+	int display_count = 0, display_index = 0, mode_index = 0;
+	SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+
+	if((display_count = SDL_GetNumVideoDisplays()) < 1)
+	{
+		SDL_Log("SDL_GetNumVideoDisplays returned: %i", display_count);
+		exit(-1);
+	}
+
+	if(SDL_GetDisplayMode(display_index, mode_index, &mode) != 0)
+	{
+		SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+		exit(-1);
+	}
+	printf("SDL_GetDisplayMode(0, 0, &mode): %i bpp, %i x %i pixels, %i Hz\n",
+		SDL_BITSPERPIXEL(mode.format), mode.w, mode.h, mode.refresh_rate);
+
+	float ddpi, hdpi, vdpi;
+	ret = SDL_GetDisplayDPI(display_index, &ddpi, &hdpi, &vdpi);
+	if(ret == 0)
+	{
+		printf("SDL DPI for display[%i]: ddpi = %f, hdpi = %f, vdpi = %f\n", display_index, ddpi, hdpi, vdpi);
+	}
+	else
+	{
+		std::cout << "Could not get DPI information from SDL" << std::endl;
+		printf("SDL Error: %s\n", SDL_GetError());
+	}
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
@@ -121,6 +151,13 @@ void gfx::init(int win_w, int win_h)
 		exit(-1);
 	}
 	fflush(stdout);
+
+	// if you call this before the OpenGL stuff you only get a dummy driver
+	int num_drivers = SDL_GetNumVideoDrivers();
+	for(int i = 0; i < num_drivers; i++)
+	{
+		printf("SDL video driver [%i] = %s\n", i, SDL_GetVideoDriver(i));
+	}
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
