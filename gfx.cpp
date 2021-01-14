@@ -20,6 +20,11 @@ void gfx::init(int win_w, int win_h)
 
 	first_pass = true;
 
+	ddpi = 0.0f;
+	hdpi = 0.0f;
+	vdpi = 0.0f;
+	dpi_scale = 1.0f;
+
 	std::string window_title = "ImGUI Testing";
 
 	int ret;
@@ -73,11 +78,11 @@ void gfx::init(int win_w, int win_h)
 	printf("SDL_GetDisplayMode(0, 0, &mode): %i bpp, %i x %i pixels, %i Hz\n",
 		SDL_BITSPERPIXEL(mode.format), mode.w, mode.h, mode.refresh_rate);
 
-	float ddpi, hdpi, vdpi;
 	ret = SDL_GetDisplayDPI(display_index, &ddpi, &hdpi, &vdpi);
 	if(ret == 0)
 	{
 		printf("SDL DPI for display[%i]: ddpi = %f, hdpi = %f, vdpi = %f\n", display_index, ddpi, hdpi, vdpi);
+		dpi_scale = ddpi / 96.0f;
 	}
 	else
 	{
@@ -181,6 +186,13 @@ void gfx::init(int win_w, int win_h)
 	ImGui_ImplSDL2_InitForOpenGL(window, context);
 	const char* glsl_version = "#version 150";
 	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	if(ddpi > 0.0f && dpi_scale > 1.0f)
+	{
+		ImGui::GetStyle().ScaleAllSizes(dpi_scale);
+		io.Fonts->Build();
+		printf("Scaled window by %f\n", dpi_scale);
+	}
 
 	// init basic OpenGL stuff
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

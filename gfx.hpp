@@ -48,6 +48,9 @@ private:
 	ImFont* font_16;
 	ImFont* font_24;
 	ImFont* font_32;
+
+	float ddpi, hdpi, vdpi;
+	float dpi_scale;
 };
 
 #endif
