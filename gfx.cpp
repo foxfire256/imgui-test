@@ -46,20 +46,6 @@ void gfx::init(int win_w, int win_h)
 		linked.major, linked.minor, linked.patch);
 	printf("SDL2 revision number: %s\n", SDL_GetRevision());
 
-	window = SDL_CreateWindow(window_title.c_str(),
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		win_w, win_h,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-
-	if(!window)
-	{
-		printf("Couldn't create window: %s\n", SDL_GetError());
-		SDL_Quit();
-		exit(-1);
-	}
-
-	SDL_ShowWindow(window);
-
 	// https://wiki.libsdl.org/CategoryVideo
 	int display_count = 0, display_index = 0, mode_index = 0;
 	SDL_DisplayMode mode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
@@ -90,11 +76,29 @@ void gfx::init(int win_w, int win_h)
 		printf("SDL Error: %s\n", SDL_GetError());
 	}
 
+	if(dpi_scale > 1.0f)
+	{
+		this->win_w = win_w * dpi_scale;
+		this->win_h = win_h * dpi_scale;
+	}
+
+	window = SDL_CreateWindow(window_title.c_str(),
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		this->win_w, this->win_h,
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+
+	if(!window)
+	{
+		printf("Couldn't create window: %s\n", SDL_GetError());
+		SDL_Quit();
+		exit(-1);
+	}
+
+	SDL_ShowWindow(window);
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING, 1);
-	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	//SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
@@ -156,6 +160,8 @@ void gfx::init(int win_w, int win_h)
 		exit(-1);
 	}
 	fflush(stdout);
+
+	resize(this->win_w, this->win_h);
 
 	// if you call this before the OpenGL stuff you only get a dummy driver
 	int num_drivers = SDL_GetNumVideoDrivers();
