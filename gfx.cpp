@@ -82,6 +82,15 @@ void gfx::init(int win_w, int win_h)
 		this->win_h = win_h * dpi_scale;
 	}
 
+	if(mode.w < this->win_w)
+	{
+		this->win_w = mode.w;
+	}
+	if(mode.h < this->win_h)
+	{
+		this->win_h = mode.h;
+	}
+
 	window = SDL_CreateWindow(window_title.c_str(),
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		this->win_w, this->win_h,
