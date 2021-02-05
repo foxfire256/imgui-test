@@ -4,7 +4,7 @@ This program displays the demo for Dear ImGUI using SDL2 and OpenGL 3.2.
 
 ## Compiling
 
-SDL2, GLEW and a C++ 11 compiler are required to compile this.
+SDL2, GLEW, OpenGL 3.x+, Freetype2 and a C++ 11 compiler are required to compile this.
 
 ## Running
 

@@ -58,6 +58,8 @@ set(IMGUI_SOURCE
 	imgui/backends/imgui_impl_opengl3.cpp
 	imgui/backends/imgui_impl_sdl.h
 	imgui/backends/imgui_impl_sdl.cpp
+	imgui/misc/freetype/imgui_freetype.cpp
+	imconfig_actual.h
 )
 
 find_package(OpenGL REQUIRED)
@@ -68,11 +70,15 @@ include_directories(${SDL2_INCLUDE_DIRS})
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
+find_package(Freetype REQUIRED)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+
 add_library(imgui STATIC ${IMGUI_SOURCE})
 target_link_libraries(imgui
 	GLEW::GLEW
 	SDL2::SDL2main
 	SDL2::SDL2
+	Freetype::Freetype
 )
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCE})
@@ -82,6 +88,7 @@ target_link_libraries(${PROJECT_NAME}
 	GLEW::GLEW
 	SDL2::SDL2main
 	SDL2::SDL2
+	Freetype::Freetype
 	imgui
 )
 
