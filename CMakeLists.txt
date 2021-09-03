@@ -15,6 +15,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # cmake .. -G "Visual Studio 16 2019" -A x64
+# cmake .. -G "Visual Studio 17 2022" -A x64
 if(MSVC)
 	set(CMAKE_PREFIX_PATH "C:\\usr\\vclibs")
 	set(CMAKE_INCLUDE_PATH "C:\\usr\\vclibs\\include")
